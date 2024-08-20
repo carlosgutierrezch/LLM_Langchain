@@ -1,3 +1,6 @@
 .env
 notebooks/data_simmulation.ipynb
 notebooks/data/actividadeconomica202401.csv
+notebooks/data/licencias202408.csv
+notebooks/data/locales202408.csv
+notebooks/data/terrazas202408.csv
