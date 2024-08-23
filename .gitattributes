@@ -1,0 +1,2 @@
+. filter=lfs diff=lfs merge=lfs -text
+notebooks/db/chroma.sqlite3 filter=lfs diff=lfs merge=lfs -text
