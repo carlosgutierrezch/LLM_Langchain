@@ -5,9 +5,10 @@ import requests
 import time
 from math import radians, sin, cos, sqrt, atan2
 import folium.map
+from dotenv import dotenv_values,load_dotenv
+
 
 #Funcion para visualizar mapas dados ciertos parametros
-
 
 def map_madrid(df:pd.DataFrame,latitud:str,longitud:str,name:str)->folium.map:
     """_summary_
@@ -90,37 +91,45 @@ def features_ing(total:pd.DataFrame)->pd.DataFrame:
     total['rating']= np.random.uniform(0,5,size=len(total)).round(1)
     return total
 
-def trial_function(coords:list):
+
+
+def data_extraction(coords: list, api_key: str):
     df = []
-    round=0
-    # page=0
+    round_counter = 0
+    
     for lat, lng in coords:
-        url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=500&type=restaurant&type=bakery&type=bar&type=cafe&type=meal_delivery&type=meal_takeaway&key={API}"
-        params = {'pagetoken': ''}
+        url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+        params = {
+            'location': f'{lat},{lng}',
+            'radius': 500,
+            'type': 'restaurant,bakery,bar,cafe,meal_delivery,meal_takeaway',
+            'key': api_key
+        }
+        
         while True:
-            response = requests.get(url, params)
+            response = requests.get(url, params=params, timeout=10)
             if response.status_code != 200:
-                print("There is a problem, please confirm the requests")
+                print(f"There was a problem with the request: {response.content}")
                 break
+            
             data = response.json()
             df.extend(data.get('results', []))
             next_page_token = data.get('next_page_token')
+            
             if not next_page_token:
                 break
-            params['pagetoken'] = next_page_token
-            # print(f"page: {page}")
-            # page += 1
             
-            time.sleep(2)
-        time.sleep(4)
-        round += 1
-        print(f'round {round}')
+            params['pagetoken'] = next_page_token
+            time.sleep(4)  
         
-
+        time.sleep(6)  # Delay between different coordinates
+        round_counter += 1
+        print(f'Round {round_counter} complete.')
+        
     return df
 
 def definitivo(*args)-> pd.DataFrame:
-    data_list = [trial_function(arg) for arg in args]
+    data_list = [data_extraction(arg) for arg in args]
     
     data_frames = [pd.json_normalize(data) for data in data_list]
     
