@@ -3,6 +3,48 @@ import numpy as np
 import utm
 import requests
 import time
+from math import radians, sin, cos, sqrt, atan2
+import folium.map
+
+#Funcion para visualizar mapas dados ciertos parametros
+
+
+def map_madrid(df:pd.DataFrame,latitud:str,longitud:str,name:str)->folium.map:
+    """_summary_
+
+    Args:
+        df (pd.DataFrame): dataframe with the data
+        latitud (str): name of the column in string format where the latitud is
+        longitud (str): name of the column in string format where the longitud is
+        name (str): name of the name column in string format
+
+    Returns:
+        _type_: _description_
+    """
+    map_m = folium.Map(location=[40.4168, -3.7038], zoom_start=14)
+
+    for (index, row) in df.iterrows():
+        folium.Marker(location = [row.loc[latitud], row.loc[longitud]],popup = row.loc[name],tooltip = "click").add_to(map_m)
+    return map_m
+
+#funcion para calcular distancia entre 2 coordenadas geograficas
+def haversine(lat1, lon1, lat2, lon2):
+    lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
+
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    r = 6371000  
+    return r * c
+
+def grid(start_lat:float,start_lng:float,lat_diff:float,lng_diff:float)->list[tuple]:
+    
+    lat_range = np.arange(start_lat - 0.060, start_lat + 0.060, lat_diff) 
+    lng_range = np.arange(start_lng - 0.060, start_lng + 0.060, lng_diff)  
+    coordinates = [(lat, lng) for lat in lat_range for lng in lng_range]
+    
+    return coordinates
 
 #funcion para detectar columnas con valores NaN
 def list_of_columns_function(df):
