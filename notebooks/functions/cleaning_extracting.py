@@ -92,25 +92,18 @@ def features_ing(total:pd.DataFrame)->pd.DataFrame:
     total['rating']= np.random.uniform(0,5,size=len(total)).round(1)
     return total
 
-
-
-def data_extraction(coords: list):
+# Function to make the extraction from Google API 
+def data_extraction(coords:list):
     df = []
-    round_counter = 0
-    
+    round=0
     for lat, lng in coords:
-        url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json"
-        params = {
-            'location': f'{lat},{lng}',
-            'radius': 500,
-            'type': 'restaurant,bakery,bar,cafe,meal_delivery,meal_takeaway',
-            'key': os.getenv('GOOGLE_API_KEY')
-        }
+        url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=500&type=restaurant&type=bakery&type=bar&type=cafe&type=meal_delivery&type=meal_takeaway&key={os.getenv('GOOGLE_API_KEY')}"
+        params = {'pagetoken': ''}
         
         while True:
-            response = requests.get(url, params=params, timeout=10)
+            response = requests.get(url, params)
             if response.status_code != 200:
-                print(f"There was a problem with the request: {response.content}")
+                print("There is a problem, please confirm the requests")
                 break
             
             data = response.json()
@@ -121,19 +114,22 @@ def data_extraction(coords: list):
                 break
             
             params['pagetoken'] = next_page_token
-            time.sleep(4)  
+            time.sleep(2)
+    
+
+        time.sleep(4)
+        round += 1
+        print(f'Round {round} complete.')
         
-        time.sleep(6)  # Delay between different coordinates
-        round_counter += 1
-        print(f'Round {round_counter} complete.')
-        
+
     return df
 
-def definitivo(*args)-> pd.DataFrame:
-    data_list = [data_extraction(arg) for arg in args]
+# this function has potential but lets discard it for now
+# def definitivo(*args)-> pd.DataFrame:
+#     data_list = [data_extraction(arg) for arg in args]
     
-    data_frames = [pd.json_normalize(data) for data in data_list]
+#     data_frames = [pd.json_normalize(data) for data in data_list]
     
-    final_data = pd.concat(data_frames, ignore_index=True)
+#     final_data = pd.concat(data_frames, ignore_index=True)
     
-    return final_data
+#     return final_data
