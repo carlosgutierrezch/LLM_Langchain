@@ -1,5 +1,4 @@
 .env
-notebooks/google_api.ipynb
 notebooks/data/actividadeconomica202401.csv
 notebooks/data/licencias202408.csv
 notebooks/data/locales202408.csv
