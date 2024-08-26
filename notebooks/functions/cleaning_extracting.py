@@ -6,7 +6,8 @@ import time
 from math import radians, sin, cos, sqrt, atan2
 import folium.map
 from dotenv import dotenv_values,load_dotenv
-
+import os
+# API = os.getenv('GOOGLE_API_KEY')
 
 #Funcion para visualizar mapas dados ciertos parametros
 
@@ -93,7 +94,7 @@ def features_ing(total:pd.DataFrame)->pd.DataFrame:
 
 
 
-def data_extraction(coords: list, api_key: str):
+def data_extraction(coords: list):
     df = []
     round_counter = 0
     
@@ -103,7 +104,7 @@ def data_extraction(coords: list, api_key: str):
             'location': f'{lat},{lng}',
             'radius': 500,
             'type': 'restaurant,bakery,bar,cafe,meal_delivery,meal_takeaway',
-            'key': api_key
+            'key': os.getenv('GOOGLE_API_KEY')
         }
         
         while True:
