@@ -1,4 +1,4 @@
-#!/Users/main/Desktop/chatbot/LLM/bin/python3.11
+#!/Users/main/Desktop/LLM_Langchain/LLM/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
