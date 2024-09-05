@@ -123,13 +123,3 @@ def data_extraction(coords:list):
         
 
     return df
-
-# this function has potential but lets discard it for now
-# def definitivo(*args)-> pd.DataFrame:
-#     data_list = [data_extraction(arg) for arg in args]
-    
-#     data_frames = [pd.json_normalize(data) for data in data_list]
-    
-#     final_data = pd.concat(data_frames, ignore_index=True)
-    
-#     return final_data
